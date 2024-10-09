@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyHelper - Your Learning Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+        }
+
+        .navbar {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar h1 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .study-tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tool-card h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .timer-container {
+            text-align: center;
+            font-size: 2rem;
+            margin: 1rem 0;
+        }
+
+        .button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+
+        .button:hover {
+            background: #2980b9;
+        }
+
+        .todo-list {
+            margin-top: 1rem;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .todo-item input[type="checkbox"] {
+            margin-right: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>StudyHelper</h1>
+    </nav>
+
+    <div class="container">
+        <div class="study-tools">
+            <div class="tool-card">
+                <h2>Pomodoro Timer</h2>
+                <div class="timer-container">
+                    <div id="timer">25:00</div>
+                    <button class="button" onclick="startTimer()">Start</button>
+                    <button class="button" onclick="resetTimer()">Reset</button>
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <h2>To-Do List</h2>
+                <div>
+                    <input type="text" id="todoInput" placeholder="Add new task..." style="padding: 0.5rem; width: 70%;">
+                    <button class="button" onclick="addTodo()">Add</button>
+                </div>
+                <div id="todoList" class="todo-list"></div>
+            </div>
+
+            <div class="tool-card">
+                <h2>Study Tips</h2>
+                <ul style="list-style-position: inside; line-height: 1.6;">
+                    <li>Break large tasks into smaller chunks</li>
+                    <li>Use active recall techniques</li>
+                    <li>Take regular breaks</li>
+                    <li>Stay hydrated and well-rested</li>
+                    <li>Create a dedicated study space</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 1500; // 25 minutes in seconds
+        let timerId = null;
+
+        function startTimer() {
+            if (timerId === null) {
+                timerId = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft === 0) {
+                        clearInterval(timerId);
+                        alert('Time for a break!');
+                        timerId = null;
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            timerId = null;
+            timeLeft = 1500;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            const text = input.value.trim();
+            if (text) {
+                const todoList = document.getElementById('todoList');
+                const todoItem = document.createElement('div');
+                todoItem.className = 'todo-item';
+                todoItem.innerHTML = `
+                    <input type="checkbox">
+                    <span>${text}</span>
+                `;
+                todoList.appendChild(todoItem);
+                input.value = '';
+            }
+        }
+
+        // Add event listener for Enter key on todo input
+        document.getElementById('todoInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTodo();
+            }
+        });
+    </script>
+</body>
+</html>
